@@ -1,0 +1,71 @@
+From 79dedc7c930e7e9e902d2c65ea0fb2f3fc4f7f4b Mon Sep 17 00:00:00 2001
+From: Soumil Biswas <soumil.biswas19@gmail.com>
+Date: Sun, 15 Oct 2023 17:54:41 +0530
+Subject: [PATCH] first patch
+
+---
+ client3.py | 34 ++++++++++++++++++++++++----------
+ 1 file changed, 24 insertions(+), 10 deletions(-)
+
+diff --git a/client3.py b/client3.py
+index 3fc09b7..6cf0f2f 100644
+--- a/client3.py
++++ b/client3.py
+@@ -30,30 +30,44 @@ N = 500
+ 
+ 
+ def getDataPoint(quote):
+-    """ Produce all the needed values to generate a datapoint """
++    """Produce all the needed values to generate a datapoint"""
+     """ ------------- Update this function ------------- """
+-    stock = quote['stock']
+-    bid_price = float(quote['top_bid']['price'])
+-    ask_price = float(quote['top_ask']['price'])
+-    price = bid_price
++    stock = quote["stock"]
++    bid_price = float(quote["top_bid"]["price"])
++    ask_price = float(quote["top_ask"]["price"])
++    price = (bid_price + ask_price) / 2
+     return stock, bid_price, ask_price, price
+ 
+ 
+ def getRatio(price_a, price_b):
+-    """ Get ratio of price_a and price_b """
++    """Get ratio of price_a and price_b"""
+     """ ------------- Update this function ------------- """
+-    return 1
++    if price_b != 0:  # Division by zero error
++        ratio = price_a / price_b
++        return ratio
++    else:
++        return
+ 
+ 
+ # Main
+ if __name__ == "__main__":
+     # Query the price once every N seconds.
+     for _ in iter(range(N)):
+-        quotes = json.loads(urllib.request.urlopen(QUERY.format(random.random())).read())
++        quotes = json.loads(
++            urllib.request.urlopen(QUERY.format(random.random())).read()
++        )
++
++        # Initialize dictionary for storing Price values
++        priceDict = {}
+ 
+         """ ----------- Update to get the ratio --------------- """
++
+         for quote in quotes:
+             stock, bid_price, ask_price, price = getDataPoint(quote)
+-            print("Quoted %s at (bid:%s, ask:%s, price:%s)" % (stock, bid_price, ask_price, price))
++            priceDict[stock] = price
++            print(
++                "Quoted %s at (bid:%s, ask:%s, price:%s)"
++                % (stock, bid_price, ask_price, price)
++            )
+ 
+-        print("Ratio %s" % getRatio(price, price))
++        print("Ratio %s" % getRatio(priceDict["ABC"], priceDict["DEF"]))
+-- 
+2.42.0.windows.2
+
